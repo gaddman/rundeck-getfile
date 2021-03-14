@@ -1,0 +1,37 @@
+name: Get remote file
+rundeckPluginVersion: 1.2
+author: Chris Gadd
+date: 2021-02-25
+version: 0.1
+url: https://github.com/gaddman/rundeck-getfile
+providers:
+    - name: remote-file-get
+      service: WorkflowNodeStep
+      title: Get remote file
+      description: Retrieve file from a remote node
+      plugin-type: script
+      script-file: getfile.sh
+      config:
+        - name: source
+          title: 'Source'
+          type: String
+          required: true
+          description: 'Full path on the remote node. May be a file or directory'
+        - name: destination
+          title: 'Destination'
+          type: String
+          required: true
+          default: /tmp/
+          description: 'Full path on the local Rundeck server.  If the path ends with a /, the same filename as the source will be used. Must be somewhere the rundeck user has access.'
+        - name: password_storage_path
+          title: Password Storage Path
+          type: String
+          required: false
+          description: "Optional storage path for password saved on the key storage. Password may also be provided as an option called 'password'."
+          scope: Instance
+          renderingOptions:
+            selectionAccessor: "STORAGE_PATH"
+            valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+            storage-path-root: "keys"
+            instance-scope-node-attribute: "password-storage-path"
+            storage-file-meta-filter: "Rundeck-data-type=password"
