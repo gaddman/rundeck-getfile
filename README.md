@@ -1,7 +1,7 @@
 Rundeck plugin to retrieve a file from a remote node.
 
 ## Description
-Connects to a remote node and retrieves a file, storing it on the Rundeck server.
+Connects to a remote node and retrieves a file, storing it on the Rundeck server. Supports SCP or SFTP.
 
 Tested in RHEL7.
 
