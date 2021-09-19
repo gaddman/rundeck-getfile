@@ -10,3 +10,6 @@ Tested in RHEL7 and Ubuntu 20.04.
 
 ## Installation
 Copy `rundeck-getfile.zip` to /var/lib/rundeck/libext, or install via the Rundeck web interface.
+
+## Usage
+May be used with a password or SSH key. If both are provided then the password will be used.

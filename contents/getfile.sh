@@ -37,14 +37,19 @@ if [[ "${DESTINATION:(-1)}" == "/" && ! -d "$DESTINATION" ]]; then
 fi
 
 # password may come from storage or an option called 'password'
+# key may come from storage
 if [[ -n "${RD_SECUREOPTION_PASSWORD:-}" ]]; then
   PASSWORD="$RD_SECUREOPTION_PASSWORD"
 elif [[ -n "${RD_OPTION_PASSWORD:-}" ]]; then
   PASSWORD="$RD_OPTION_PASSWORD"
 elif [[ -n "${RD_CONFIG_PASSWORD_STORAGE_PATH:-}" ]]; then
   PASSWORD="$RD_CONFIG_PASSWORD_STORAGE_PATH"
+elif [[ -n "${RD_CONFIG_SSH_KEY_STORAGE_PATH:-}" ]]; then
+  SSHKEY=$(mktemp)
+  echo "$RD_CONFIG_SSH_KEY_STORAGE_PATH" > $SSHKEY
+  trap 'rm "$SSHKEY"' EXIT
 else
-  echo "No password provided"
+  echo "No password or key provided"
   exit 1
 fi
 
@@ -53,4 +58,10 @@ echo "Copying from $HOST:$SOURCE to $DESTINATION"
 OPTIONS="-r -o StrictHostKeyChecking=No"
 [[ "${RD_JOB_LOGLEVEL:-}" == "DEBUG" ]] && OPTIONS="$OPTIONS -v"
 
-/usr/bin/sshpass -p $PASSWORD /usr/bin/$PROTOCOL $OPTIONS $USERNAME@$HOST:"$SOURCE" $DESTINATION
+if [[ -n "${PASSWORD:-}" ]]; then
+  # password auth
+  /usr/bin/sshpass -p $PASSWORD /usr/bin/$PROTOCOL $OPTIONS $USERNAME@$HOST:"$SOURCE" $DESTINATION
+else
+  # key auth
+  /usr/bin/$PROTOCOL -i $SSHKEY $OPTIONS $USERNAME@$HOST:"$SOURCE" $DESTINATION
+fi

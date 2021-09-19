@@ -2,7 +2,7 @@ name: Get remote file
 rundeckPluginVersion: 1.2
 author: Chris Gadd
 date: 2021-02-25
-version: 0.3
+version: 0.4
 url: https://github.com/gaddman/rundeck-getfile
 providers:
     - name: remote-file-get
@@ -23,6 +23,17 @@ providers:
           required: true
           default: /var/lib/rundeck/projects/${job.project}/data/
           description: 'Full path on the local Rundeck server.  If the path ends with a /, the same filename as the source will be used. Must be somewhere the rundeck user has access.'
+        - name: ssh_key_storage_path
+          title: SSH Key Storage Path
+          type: String
+          required: false
+          description: "Optional storage path for SSH key saved on the key storage."
+          scope: Instance
+          renderingOptions:
+            selectionAccessor: "STORAGE_PATH"
+            valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+            storage-path-root: "keys"
+            storage-file-meta-filter: "Rundeck-key-type=private"
         - name: password_storage_path
           title: Password Storage Path
           type: String
@@ -33,7 +44,6 @@ providers:
             selectionAccessor: "STORAGE_PATH"
             valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
             storage-path-root: "keys"
-            instance-scope-node-attribute: "password-storage-path"
             storage-file-meta-filter: "Rundeck-data-type=password"
         - name: protocol
           title: 'Protocol'
