@@ -9,6 +9,8 @@
 # 2021-02-25
 #####
 
+set -e
+
 SOURCE=$RD_CONFIG_SOURCE
 DESTINATION=$RD_CONFIG_DESTINATION
 PROTOCOL=$RD_CONFIG_PROTOCOL
@@ -29,6 +31,11 @@ if [[ "$REALDESTINATION" =~ ^/etc/rundeck/ ]]; then
   exit 1
 fi
 
+# If the destination is a directory and doesn't exist, create it
+if [[ "${DESTINATION:(-1)}" == "/" && ! -d "$DESTINATION" ]]; then
+  mkdir -p "$DESTINATION"
+fi
+
 # password may come from storage or an option called 'password'
 if [[ -n "${RD_SECUREOPTION_PASSWORD:-}" ]]; then
   PASSWORD="$RD_SECUREOPTION_PASSWORD"
@@ -41,7 +48,7 @@ else
   exit 1
 fi
 
-echo "Copying from $HOST: $SOURCE to $DESTINATION"
+echo "Copying from $HOST:$SOURCE to $DESTINATION"
 
 OPTIONS="-r -o StrictHostKeyChecking=No"
 [[ "${RD_JOB_LOGLEVEL:-}" == "DEBUG" ]] && OPTIONS="$OPTIONS -v"
