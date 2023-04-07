@@ -34,6 +34,17 @@ providers:
             valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
             storage-path-root: "keys"
             storage-file-meta-filter: "Rundeck-key-type=private"
+        - name: ssh_key_passphrase_storage_path
+          title: SSH Key Passphrase Storage Path
+          type: String
+          required: false
+          description: "Optional storage path for ssh-key passphrase."
+          scope: Instance
+          renderingOptions:
+            selectionAccessor: "STORAGE_PATH"
+            valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+            storage-path-root: "keys"
+            storage-file-meta-filter: "Rundeck-data-type=password"
         - name: password_storage_path
           title: Password Storage Path
           type: String
