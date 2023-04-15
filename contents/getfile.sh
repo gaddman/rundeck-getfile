@@ -40,7 +40,7 @@ if [[ "${destination:(-1)}" == "/" && ! -d "$destination" ]]; then
   mkdir -p "$destination"
 fi
 
-temp_dir=$(mktemp -d)
+temp_dir=$(mktemp -d -p "$RD_PLUGIN_TMPDIR")
 trap cleanup EXIT
 
 # Password may come from storage or an option called 'password'.
@@ -52,7 +52,8 @@ elif [[ -n "${RD_OPTION_PASSWORD:-}" ]]; then
 elif [[ -n "${RD_CONFIG_PASSWORD_STORAGE_PATH:-}" ]]; then
   echo "$RD_CONFIG_PASSWORD_STORAGE_PATH" > "$temp_dir/password"
 elif [[ -n "${RD_CONFIG_SSH_KEY_STORAGE_PATH:-}" ]]; then
-  echo "$RD_CONFIG_SSH_KEY_STORAGE_PATH"  > "$temp_dir/key"
+  # While https://github.com/rundeck/rundeck/issues/7749 is unresolved remove CR/LF
+  echo "${RD_CONFIG_SSH_KEY_STORAGE_PATH//$'\r'}" > "$temp_dir/key"
   chmod 600 "$temp_dir/key"
   if [[ -n "${RD_CONFIG_SSH_KEY_PASSPHRASE_STORAGE_PATH:-}" ]]; then
     echo "$RD_CONFIG_SSH_KEY_PASSPHRASE_STORAGE_PATH"  > "$temp_dir/passphrase"
