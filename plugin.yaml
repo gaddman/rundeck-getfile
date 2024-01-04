@@ -2,13 +2,13 @@ name: Get remote file
 rundeckPluginVersion: 1.2
 author: Chris Gadd
 date: 2021-02-25
-version: 0.5
+version: 0.6
 url: https://github.com/gaddman/rundeck-getfile
 providers:
     - name: remote-file-get
       service: WorkflowNodeStep
       title: Get remote file
-      description: Retrieve file from a remote node
+      description: Retrieve files from a remote node.
       plugin-type: script
       script-file: getfile.sh
       config:
@@ -17,12 +17,14 @@ providers:
           type: String
           required: true
           description: 'Full path on the remote node. May be a file or directory. Multiple paths can be provided as a space-delimited list.'
+          scope: Instance
         - name: destination
           title: 'Destination'
           type: String
           required: true
           default: /var/lib/rundeck/projects/${job.project}/data/
           description: 'Full path on the local Rundeck server.  If the path ends with a /, the same filename as the source will be used. Must be somewhere the rundeck user has access.'
+          scope: Instance
         - name: ssh_key_storage_path
           title: SSH Key Storage Path
           type: String
@@ -63,3 +65,10 @@ providers:
           default: scp
           values: scp,sftp
           description: 'How to connect to the remote host.'
+          scope: Instance
+        - name: options
+          title: 'Options'
+          type: String
+          required: false
+          description: 'Options to pass to the scp or sftp program.'
+          scope: Instance

@@ -14,6 +14,7 @@ set -e
 source="$RD_CONFIG_SOURCE"
 destination="$RD_CONFIG_DESTINATION"
 protocol=$RD_CONFIG_PROTOCOL
+options="$RD_CONFIG_OPTIONS"
 host=$RD_NODE_HOSTNAME
 
 cleanup() {
@@ -65,7 +66,7 @@ fi
 
 echo "Copying from $host:$source to $destination"
 
-options="-r -o StrictHostKeyChecking=No"
+options="-r $options"
 [[ "${RD_JOB_LOGLEVEL:-}" == "DEBUG" ]] && options="$options -v"
 
 if [[ -e "$temp_dir/password" ]]; then
